@@ -31,6 +31,7 @@
 from collections import namedtuple
 
 from lib.hash import double_sha256, hash_to_str
+from lib.script import OpCodes
 from lib.util import (cachedproperty, unpack_int32_from, unpack_int64_from,
                       unpack_uint16_from, unpack_uint32_from,
                       unpack_uint64_from)
@@ -56,6 +57,9 @@ class TxInput(namedtuple("TxInput", "prev_hash prev_idx script sequence")):
     def is_coinbase(self):
         return (self.prev_hash == TxInput.ZERO and
                 self.prev_idx == TxInput.MINUS_1)
+
+    def is_spendable(self):
+        return self.script[0] != OpCodes.OP_RETURN
 
     def __str__(self):
         script = self.script.hex()
@@ -416,6 +420,9 @@ class TxInputDcr(namedtuple("TxInput", "prev_hash prev_idx tree sequence")):
         # zero hash.
         return (self.prev_hash == TxInputDcr.ZERO and
                 self.prev_idx == TxInputDcr.MINUS_1)
+
+    def is_spendable(self):
+        return True
 
     def __str__(self):
         prev_hash = hash_to_str(self.prev_hash)
