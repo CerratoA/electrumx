@@ -540,6 +540,8 @@ class BlockProcessor(server.db.DB):
             # Spend the inputs
             if not tx.is_coinbase:
                 for txin in tx.inputs:
+                    if txin.is_spendable() is False:
+                        continue
                     cache_value = spend_utxo(txin.prev_hash, txin.prev_idx)
                     undo_info_append(cache_value)
                     add_hashX(cache_value[:-12])
@@ -620,6 +622,8 @@ class BlockProcessor(server.db.DB):
             # Restore the inputs
             if not tx.is_coinbase:
                 for txin in reversed(tx.inputs):
+                    if txin.is_spendable() is False:
+                        continue
                     n -= undo_entry_len
                     undo_item = undo_info[n:n + undo_entry_len]
                     put_utxo(txin.prev_hash + s_pack('<H', txin.prev_idx),
