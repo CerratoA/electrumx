@@ -424,18 +424,6 @@ class DeserializerGroestlcoin(DeserializerSegWit):
     TX_HASH_FN = staticmethod(sha256)
 
 
-class TxTokenPay(TxTime):
-
-    @cachedproperty
-    def is_coinbase(self):
-        # If we are dealing with a stealth transaction, with only one input
-        # and that input is a stealth input, we are filtering it out during
-        # _read_inputs(), so we might not have an input to look at
-        if len(self.inputs) == 0:
-            return False
-        return self.inputs[0].is_coinbase
-
-
 class DeserializerTokenPay(Deserializer):
 
     # Transactions that contain stealth inputs or outputs,
@@ -444,7 +432,7 @@ class DeserializerTokenPay(Deserializer):
 
     def read_tx(self):
         version = self._read_le_int32()
-        return TxTokenPay(
+        return TxTime(
             version,                                # version
             self._read_le_uint32(),                 # time
             self._read_inputs(tx_version=version),  # inputs

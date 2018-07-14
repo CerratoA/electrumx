@@ -1187,7 +1187,7 @@ class TokenPay(ScryptMixin, Coin):
     DAEMON = daemon.LegacyRPCDaemon
     TX_COUNT = 147934
     TX_COUNT_HEIGHT = 73967
-    TX_PER_BLOCK = 1800
+    TX_PER_BLOCK = 100
     RPC_PORT = 8800
     REORG_LIMIT = 500
     XPUB_VERBYTES = bytes.fromhex("0488B21E")
