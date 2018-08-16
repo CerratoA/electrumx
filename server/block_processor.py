@@ -540,11 +540,7 @@ class BlockProcessor(server.db.DB):
             # Spend the inputs
             if not tx.is_coinbase:
                 for txin in tx.inputs:
-                    # NOTE(gabriel-samfira): Be forgiving if someone wants
-                    # to rebase and has not implemented is_spendable in their
-                    # custom TxInput
-                    check_spendable = getattr(txin, 'is_spendable', None)
-                    if check_spendable and check_spendable() is False:
+                    if txin.is_spendable() is False:
                         continue
                     cache_value = spend_utxo(txin.prev_hash, txin.prev_idx)
                     undo_info_append(cache_value)
@@ -626,9 +622,15 @@ class BlockProcessor(server.db.DB):
             # Restore the inputs
             if not tx.is_coinbase:
                 for txin in reversed(tx.inputs):
+<<<<<<< HEAD
                     check_spendable = getattr(txin, 'is_spendable', None)
                     if check_spendable and check_spendable() is False:
                         continue
+||||||| merged common ancestors
+=======
+                    if txin.is_spendable() is False:
+                        continue
+>>>>>>> 1c1acf4697ec70aef09278a8a87cbdd6e0f70d1b
                     n -= undo_entry_len
                     undo_item = undo_info[n:n + undo_entry_len]
                     put_utxo(txin.prev_hash + s_pack('<H', txin.prev_idx),
