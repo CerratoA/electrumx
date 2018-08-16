@@ -220,6 +220,7 @@ class Controller(ServerBase):
     async def wait_for_bp_catchup(self):
         '''Wait for the block processor to catch up, and for the mempool to
         synchronize, then kick off server background processes.'''
+        self.logger.info('wait_for_bp_catchup')
         await self.bp.caught_up_event.wait()
         self.logger.info('block processor has caught up')
         self.create_task(self.mempool.main_loop())
@@ -855,6 +856,15 @@ class Controller(ServerBase):
         '''
         # For some reason Electrum protocol 1.0 passes a height.
         return await self.transaction_get(tx_hash)
+    
+    async def transaction_get_decoded(self, tx_hash, height=None):
+        '''Return the serialized raw transaction given its hash
+
+        tx_hash: the transaction hash as a hexadecimal string
+        height: ignored, do not use
+        '''
+        # For some reason Electrum protocol 1.0 passes a height.
+        return await self.transaction_get(tx_hash, True)
 
     async def transaction_get_merkle(self, tx_hash, height):
         '''Return the markle tree to a confirmed transaction given its hash
