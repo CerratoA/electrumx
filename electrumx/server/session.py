@@ -1158,6 +1158,9 @@ class ElectrumX(SessionBase):
 
         return await self.daemon_request('getrawtransaction', tx_hash, verbose)
 
+    async def transaction_get_1_1(self, tx_hash, height=None):
+        return await self.transaction_get(tx_hash, True)
+
     async def _block_hash_and_tx_hashes(self, height):
         '''Returns a pair (block_hash, tx_hashes) for the main chain block at
         the given height.
@@ -1235,6 +1238,7 @@ class ElectrumX(SessionBase):
             'blockchain.scripthash.subscribe': self.scripthash_subscribe,
             'blockchain.transaction.broadcast': self.transaction_broadcast,
             'blockchain.transaction.get': self.transaction_get,
+            'blockchain.transaction.get_decoded': self.transaction_get_1_1,
             'blockchain.transaction.get_merkle': self.transaction_merkle,
             'server.add_peer': self.add_peer,
             'server.banner': self.banner,
