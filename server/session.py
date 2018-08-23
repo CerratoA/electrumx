@@ -475,7 +475,6 @@ class ElectrumX(SessionBase):
             'server.peers.subscribe': self.peers_subscribe,
             'server.version': self.server_version,
         }
-
         if ptuple < (1, 1):
             # Methods or semantics unique to 1.0 and earlier protocols
             handlers.update({
@@ -484,6 +483,7 @@ class ElectrumX(SessionBase):
                 'blockchain.transaction.broadcast':
                 self.transaction_broadcast_1_0,
                 'blockchain.transaction.get': controller.transaction_get_1_0,
+                'blockchain.transaction.get_decoded': controller.transaction_get_1_1,
             })
 
         if ptuple >= (1, 1):

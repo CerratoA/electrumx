@@ -131,7 +131,10 @@ class Controller(ServerBase):
             await self.start_server('RPC', self.env.cs_host(for_rpc=True),
                                     self.env.rpc_port)
 
-        self.create_task(self.bp.main_loop())
+        try:
+            self.create_task(self.bp.main_loop())
+        except Exception as e:
+            self.logger.info(e)
         self.create_task(self.wait_for_bp_catchup())
 
     async def shutdown(self):
@@ -191,7 +194,7 @@ class Controller(ServerBase):
             if not task.cancelled():
                 task.result()
         except Exception as e:
-            self.logger.exception(f'uncaught task exception: {e}')
+            self.logger.info(f'ERROR: uncaught task exception: {e}')
 
     async def housekeeping(self):
         '''Regular housekeeping checks.'''
@@ -220,12 +223,13 @@ class Controller(ServerBase):
     async def wait_for_bp_catchup(self):
         '''Wait for the block processor to catch up, and for the mempool to
         synchronize, then kick off server background processes.'''
+        self.create_task(self.log_start_external_servers())
         await self.bp.caught_up_event.wait()
         self.logger.info('block processor has caught up')
         self.create_task(self.mempool.main_loop())
         await self.mempool.synchronized_event.wait()
         self.create_task(self.peer_mgr.main_loop())
-        self.create_task(self.log_start_external_servers())
+        #self.create_task(self.log_start_external_servers())
         self.create_task(self.housekeeping())
 
     def close_servers(self, kinds):
@@ -855,6 +859,9 @@ class Controller(ServerBase):
         '''
         # For some reason Electrum protocol 1.0 passes a height.
         return await self.transaction_get(tx_hash)
+
+    async def transaction_get_1_1(self, tx_hash, height=None):
+        return await self.transaction_get(tx_hash, True)
 
     async def transaction_get_merkle(self, tx_hash, height):
         '''Return the markle tree to a confirmed transaction given its hash
