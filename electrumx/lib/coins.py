@@ -1514,6 +1514,23 @@ class TokenPay(ScryptMixin, Coin):
     ]
 
 
+class TokenPayTestnet(TokenPay):
+    NET = "testnet"
+    P2PKH_VERBYTE = bytes.fromhex("7f")
+    P2SH_VERBYTES = [bytes.fromhex("c4")]
+    WIF_BYTE = bytes.fromhex("ff")
+    GENESIS_HASH = ('04f622af0c331e6e6b2477468f7c3320'
+                    '2a607b865daa3536a3dbe3fb61714d6d')
+    TX_COUNT = 2383423
+    TX_COUNT_HEIGHT = 759076
+    TX_PER_BLOCK = 3
+    RPC_PORT = 16600
+    REORG_LIMIT = 1000
+    XPUB_VERBYTES = bytes.fromhex("043587CF")
+    XPRV_VERBYTES = bytes.fromhex("04358394")
+    PEERS = []  
+
+
 class Vertcoin(Coin):
     NAME = "Vertcoin"
     SHORTNAME = "VTC"
