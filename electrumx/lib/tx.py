@@ -29,7 +29,8 @@
 
 from collections import namedtuple
 
-from electrumx.lib.hash import sha256, double_sha256, hash_to_hex_str
+from electrumx.lib.hash import double_sha256, hash_to_hex_str
+from electrumx.lib.script import OpCodes
 from electrumx.lib.util import (
     unpack_le_int32_from, unpack_le_int64_from, unpack_le_uint16_from,
     unpack_le_uint32_from, unpack_le_uint64_from, pack_le_int32, pack_varint,
@@ -419,8 +420,44 @@ class DeserializerBitcoinAtom(DeserializerSegWit):
         return self._read_nbytes(header_len)
 
 
-class DeserializerGroestlcoin(DeserializerSegWit):
-    TX_HASH_FN = staticmethod(sha256)
+class TxTokenPay(TxTime):
+
+    @cachedproperty
+    def is_coinbase(self):
+        # If we are dealing with a stealth transaction, with only one input
+        # and that input is a stealth input, we are filtering it out during
+        # _read_inputs(), so we might not have an input to look at
+        if len(self.inputs) == 0:
+            return False
+        return self.inputs[0].is_coinbase
+
+
+class DeserializerTokenPay(Deserializer):
+
+    # Transactions that contain stealth inputs or outputs,
+    # have a version of 1000
+    STEALTH_TX_VERSION = 1000
+
+    def read_tx(self):
+        version = self._read_le_int32()
+        return TxTokenPay(
+            version,                                # version
+            self._read_le_uint32(),                 # time
+            self._read_inputs(tx_version=version),  # inputs
+            self._read_outputs(),                   # outputs
+            self._read_le_uint32(),                 # locktime
+        )
+
+    def _read_inputs(self, tx_version):
+        read_input = self._read_input
+        tx_inputs = []
+        for i in range(self._read_varint()):
+            tx_input = read_input()
+            if (tx_version == self.STEALTH_TX_VERSION and
+                    tx_input.script[0] == OpCodes.OP_RETURN):
+                continue
+            tx_inputs.append(tx_input)
+        return tx_inputs
 
 
 # Decred
