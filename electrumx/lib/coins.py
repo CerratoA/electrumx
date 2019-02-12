@@ -1516,6 +1516,45 @@ class TokenPay(ScryptMixin, Coin):
     ]
 
 
+class TokenPayTestnet(TokenPay):
+    NET = "testnet"
+    P2PKH_VERBYTE = bytes.fromhex("7f")
+    P2SH_VERBYTES = [bytes.fromhex("c4")]
+    WIF_BYTE = bytes.fromhex("ff")
+    GENESIS_HASH = ('04f622af0c331e6e6b2477468f7c3320'
+                    '2a607b865daa3536a3dbe3fb61714d6d')
+    TX_COUNT = 2383423
+    TX_COUNT_HEIGHT = 759076
+    TX_PER_BLOCK = 3
+    RPC_PORT = 16600
+    REORG_LIMIT = 1000
+    XPUB_VERBYTES = bytes.fromhex("043587CF")
+    XPRV_VERBYTES = bytes.fromhex("04358394")
+    PEERS = []  
+
+
+class Efin(ScryptMixin, Coin):
+    NAME = "Efin"
+    SHORTNAME = "EFIN"
+    NET = "mainnet"
+    P2PKH_VERBYTE = bytes.fromhex("21")
+    P2SH_VERBYTES = [bytes.fromhex("3c")]
+    WIF_BYTE = bytes.fromhex("5c")
+    GENESIS_HASH = ('0000518ad03c59a86c3065d90d4cc19'
+                    '9b37704c0a81ec4dda29c69419fea657c')
+    DESERIALIZER = lib_tx.DeserializerSegWit
+    DAEMON = daemon.LegacyRPCDaemon
+    TX_COUNT = 147934
+    TX_COUNT_HEIGHT = 73967
+    TX_PER_BLOCK = 100
+    RPC_PORT = 8800
+    REORG_LIMIT = 500
+    XPUB_VERBYTES = bytes.fromhex("011c3bed")
+    XPRV_VERBYTES = bytes.fromhex("011c3488")
+
+    PEERS = []
+
+
 class Vertcoin(Coin):
     NAME = "Vertcoin"
     SHORTNAME = "VTC"
