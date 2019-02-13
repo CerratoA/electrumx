@@ -2680,3 +2680,17 @@ class MyriadcoinTestnet(Myriadcoin):
     WIF_BYTE = bytes.fromhex("ef")
     GENESIS_HASH = ('0000017ce2a79c8bddafbbe47c004aa9'
                     '2b20678c354b34085f62b762084b9788')
+
+
+class Verge(Coin):
+    NAME = "Verge"
+    SHORTNAME = "XVG"
+    NET = "mainnet"
+    XPUB_VERBYTES = bytes.fromhex("0488b21e")
+    XPRV_VERBYTES = bytes.fromhex("0488ade4")
+    P2PKH_VERBYTE = bytes.fromhex("1e")
+    P2SH_VERBYTES = [bytes.fromhex("21")]
+    WIF_BYTE = bytes.fromhex("b3")
+    GENESIS_HASH = ('00000fc63692467faeb20cdb3b53200dc60'
+                    '1d75bdfa1001463304cc790d77278')
+    DESERIALIZER = lib_tx.DeserializerTxTime
