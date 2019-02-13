@@ -2682,7 +2682,7 @@ class MyriadcoinTestnet(Myriadcoin):
                     '2b20678c354b34085f62b762084b9788')
 
 
-class Verge(Coin):
+class Verge(ScryptMixin, Coin):
     NAME = "Verge"
     SHORTNAME = "XVG"
     NET = "mainnet"
@@ -2691,6 +2691,11 @@ class Verge(Coin):
     P2PKH_VERBYTE = bytes.fromhex("1e")
     P2SH_VERBYTES = [bytes.fromhex("21")]
     WIF_BYTE = bytes.fromhex("b3")
-    GENESIS_HASH = ('00000fc63692467faeb20cdb3b53200dc60'
-                    '1d75bdfa1001463304cc790d77278')
+    GENESIS_HASH=('00000fc63692467faeb20cdb3b53200dc601d75'
+                  'bdfa1001463304cc790d77278')
     DESERIALIZER = lib_tx.DeserializerTxTime
+    DAEMON = daemon.LegacyRPCDaemon
+    TX_COUNT = 147934
+    TX_COUNT_HEIGHT = 73967
+    TX_PER_BLOCK = 100
+    RPC_PORT = 8020
