@@ -2682,7 +2682,7 @@ class MyriadcoinTestnet(Myriadcoin):
                     '2b20678c354b34085f62b762084b9788')
 
 
-class Verge(ScryptMixin, Coin):
+class Verge(Coin):
     NAME = "Verge"
     SHORTNAME = "XVG"
     NET = "mainnet"
@@ -2699,3 +2699,14 @@ class Verge(ScryptMixin, Coin):
     TX_COUNT_HEIGHT = 73967
     TX_PER_BLOCK = 100
     RPC_PORT = 8020
+    DESERIALIZER = lib_tx.DeserializerTxTime
+    HEADER_HASH = None
+
+    @classmethod
+    def header_hash(cls, header):
+        '''Given a header return the hash.'''
+        if cls.HEADER_HASH is None:
+            import scrypt
+            cls.HEADER_HASH = lambda x: scrypt.hash(x, x, 1024, 1, 1, 32)
+
+        return cls.HEADER_HASH(header)
